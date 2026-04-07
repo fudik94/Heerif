@@ -1,11 +1,11 @@
-# Layout Switcher — Design Spec
+# Heerif — Layout Switcher App Design Spec
 
 **Date:** 2026-04-07  
 **Status:** Approved
 
 ## Overview
 
-A Windows background utility written in Python that converts text typed in the wrong keyboard layout. When the user accidentally types in the wrong layout (e.g. "цудсщьу" instead of "welcome"), they press a hotkey and the text is instantly converted to the correct layout.
+**Heerif** is a Windows background utility written in Python that converts text typed in the wrong keyboard layout. When the user accidentally types in the wrong layout (e.g. "цудсщьу" instead of "welcome"), they press a hotkey and the text is instantly converted to the correct layout.
 
 ## User-Facing Behavior
 
@@ -30,7 +30,7 @@ A Windows background utility written in Python that converts text typed in the w
 | `clipboard_manager.py` | Handles clipboard copy/paste; saves and restores the original clipboard contents |
 | `layout_maps.py` | Keyboard layout mapping tables (EN↔RU, extensible for other pairs) |
 | `tray_app.py` | System tray icon (pystray) + compact tkinter settings popup |
-| `config.py` | Loads/saves settings to `~/.layoutswitcher/config.json` |
+| `config.py` | Loads/saves settings to `~/.heerif/config.json` |
 
 ### Conversion Flow
 
