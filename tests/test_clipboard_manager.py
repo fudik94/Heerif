@@ -3,7 +3,7 @@ from src.clipboard_manager import ClipboardManager
 
 
 def test_save_and_restore(mocker):
-    mock_paste = mocker.patch('src.clipboard_manager.pyperclip.paste', return_value='original')
+    mocker.patch('src.clipboard_manager.pyperclip.paste', return_value='original')
     mock_copy = mocker.patch('src.clipboard_manager.pyperclip.copy')
     mgr = ClipboardManager()
     mgr.save()

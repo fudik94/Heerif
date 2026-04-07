@@ -1,3 +1,4 @@
+"""Clipboard save/restore and selection detection for the conversion pipeline."""
 import time
 import pyperclip
 from pynput import keyboard
@@ -41,6 +42,7 @@ class ClipboardManager:
         ctrl.release(keyboard.Key.ctrl)
         time.sleep(0.1)
         after = self.get()
+        # Return None if clipboard is empty or unchanged — neither represents a real selection
         if after and after != before:
             return after
         return None
