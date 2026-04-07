@@ -1,3 +1,5 @@
+"""EN<->RU keyboard layout character mapping tables (QWERTY <-> ЙЦУКЕН)."""
+
 EN_RU: dict[str, str] = {
     # Lowercase
     'q': 'й', 'w': 'ц', 'e': 'у', 'r': 'к', 't': 'е',
@@ -26,5 +28,4 @@ def get_maps(language_pair: str) -> dict[str, dict[str, str]]:
     """Return forward and reverse maps for the given language pair."""
     if language_pair == 'en_ru':
         return {'en_ru': EN_RU, 'ru_en': RU_EN}
-    # Default fallback — future pairs can be added here
-    return {'en_ru': EN_RU, 'ru_en': RU_EN}
+    raise ValueError(f"Unknown language pair: {language_pair!r}. Supported: 'en_ru'")

@@ -1,3 +1,5 @@
+import pytest
+
 from src.layout_maps import EN_RU, RU_EN, get_maps
 
 
@@ -37,3 +39,8 @@ def test_known_word_privet():
     word = 'ghbdtn'
     result = ''.join(EN_RU.get(c, c) for c in word)
     assert result == 'привет'
+
+
+def test_get_maps_unknown_pair_raises():
+    with pytest.raises(ValueError, match="Unknown language pair"):
+        get_maps('unknown_pair')
