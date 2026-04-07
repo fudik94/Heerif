@@ -47,3 +47,8 @@ def test_auto_convert_cyrillic_to_latin():
 def test_auto_convert_preserves_spaces():
     result = auto_convert('ghbdtn ьшк', EN_RU, RU_EN)
     assert result == 'привет mir'
+
+
+def test_detect_tie_defaults_to_en():
+    # Equal Cyrillic and Latin — defaults to 'en'
+    assert detect_layout('abcцвб') == 'en'

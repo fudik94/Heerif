@@ -18,17 +18,15 @@ def auto_convert(
     en_ru: dict[str, str],
     ru_en: dict[str, str],
 ) -> str:
-    """Auto-detect layout direction and convert to the other layout."""
+    """Auto-detect majority layout and convert each character to the other layout.
+
+    Latin chars are converted via en_ru; Cyrillic chars via ru_en.
+    Detection determines which map is applied to ambiguous (non-alpha) characters.
+    """
     layout = detect_layout(text)
-    result = []
-    for char in text:
-        if layout == 'ru':
-            result.append(ru_en.get(char, char))
-        else:
-            # For English layout, apply RU_EN to Cyrillic chars (they're mislabeled)
-            # and EN_RU to Latin chars
-            if '\u0400' <= char <= '\u04FF':
-                result.append(ru_en.get(char, char))
-            else:
-                result.append(en_ru.get(char, char))
-    return ''.join(result)
+    if layout == 'ru':
+        return convert(text, ru_en)
+    return ''.join(
+        ru_en.get(c, c) if '\u0400' <= c <= '\u04FF' else en_ru.get(c, c)
+        for c in text
+    )
