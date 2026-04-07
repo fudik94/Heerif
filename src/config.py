@@ -1,3 +1,4 @@
+"""Config dataclass and JSON persistence for ~/.heerif/config.json."""
 import json
 from dataclasses import dataclass, asdict, fields
 from pathlib import Path
