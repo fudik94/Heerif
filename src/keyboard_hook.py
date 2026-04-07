@@ -1,3 +1,4 @@
+"""Global keyboard listener and ring buffer for tracking recent keystrokes."""
 from collections import deque
 from pynput import keyboard
 
@@ -10,9 +11,11 @@ class KeystrokeBuffer:
         self._buffer.append(char)
 
     def peek(self, n: int) -> str:
+        """Return the last n characters without removing them. Returns fewer if buffer has less than n chars."""
         return ''.join(list(self._buffer)[-n:]) if n > 0 else ''
 
     def pop(self, n: int) -> str:
+        """Remove and return the last n characters. If n exceeds buffer size, returns all chars."""
         n = min(n, len(self._buffer))
         chars = list(self._buffer)[-n:]
         for _ in range(n):
@@ -20,6 +23,7 @@ class KeystrokeBuffer:
         return ''.join(chars)
 
     def clear(self) -> None:
+        """Clear all characters from the buffer."""
         self._buffer.clear()
 
 
@@ -36,6 +40,7 @@ class KeyboardHook:
     def stop(self) -> None:
         if self._listener:
             self._listener.stop()
+            self._listener = None
 
     def _on_press(self, key) -> None:
         try:
@@ -43,6 +48,7 @@ class KeyboardHook:
             if char:
                 self._buffer.add(char)
         except AttributeError:
+            # Special key (no .char attribute) — handle specific keys only
             if key == keyboard.Key.backspace:
                 self._buffer.pop(1)
             elif key in (keyboard.Key.enter, keyboard.Key.esc, keyboard.Key.tab):
