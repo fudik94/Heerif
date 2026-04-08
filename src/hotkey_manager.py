@@ -1,71 +1,37 @@
-"""Global hotkey listener using pynput HotKey for the Heerif layout switcher."""
+"""Global hotkey listener using the keyboard library for the Heerif layout switcher."""
 
 from typing import Callable
-from pynput import keyboard
-
-
-_MODIFIER_KEYS = {'ctrl', 'alt', 'shift', 'cmd', 'space', 'enter', 'tab', 'esc',
-                  'backspace', 'delete', 'home', 'end', 'insert', 'f1', 'f2',
-                  'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12'}
+import keyboard
 
 
 class HotkeyManager:
     def __init__(self, hotkey_str: str, callback: Callable[[], None]) -> None:
         self._hotkey_str = hotkey_str
         self._callback = callback
-        self._listener: keyboard.Listener | None = None
-        self._hotkey_obj: keyboard.HotKey | None = None
-
-    def _format_hotkey(self, hotkey_str: str) -> str:
-        """Convert 'ctrl+space' format to pynput format '<ctrl>+<space>'."""
-        parts = [p.strip().lower() for p in hotkey_str.split('+')]
-        formatted = []
-        for part in parts:
-            if part in _MODIFIER_KEYS or len(part) > 1:
-                formatted.append(f'<{part}>')
-            else:
-                formatted.append(part)
-        return '+'.join(formatted)
+        self._hotkey_ref = None  # handle returned by keyboard.add_hotkey
 
     def start(self) -> None:
-        """Start listening for the configured hotkey. No-op if already running.
+        """Register the global hotkey. No-op if already running.
 
-        Raises ValueError if the hotkey string cannot be parsed.
+        Raises ValueError if the hotkey string is invalid.
         """
-        if self._listener is not None:
+        if self._hotkey_ref is not None:
             return
-        formatted = self._format_hotkey(self._hotkey_str)
         try:
-            keys = keyboard.HotKey.parse(formatted)
+            self._hotkey_ref = keyboard.add_hotkey(self._hotkey_str, self._callback)
         except ValueError as exc:
             raise ValueError(
                 f"Invalid hotkey {self._hotkey_str!r}: {exc}"
             ) from exc
-        self._hotkey_obj = keyboard.HotKey(keys, self._callback)
-        self._listener = keyboard.Listener(
-            on_press=self._on_press,
-            on_release=self._on_release,
-        )
-        self._listener.daemon = True
-        self._listener.start()
 
     def stop(self) -> None:
-        """Stop the hotkey listener and reset internal state."""
-        if self._listener:
-            self._listener.stop()
-            self._listener = None
-        self._hotkey_obj = None
+        """Unregister the global hotkey and reset internal state."""
+        if self._hotkey_ref is not None:
+            keyboard.remove_hotkey(self._hotkey_ref)
+            self._hotkey_ref = None
 
     def update_hotkey(self, new_hotkey_str: str) -> None:
-        """Stop current listener, update hotkey string, and restart listener."""
+        """Stop current hotkey, update hotkey string, and restart."""
         self.stop()
         self._hotkey_str = new_hotkey_str
         self.start()
-
-    def _on_press(self, key) -> None:
-        if self._hotkey_obj and self._listener:
-            self._hotkey_obj.press(self._listener.canonical(key))
-
-    def _on_release(self, key) -> None:
-        if self._hotkey_obj and self._listener:
-            self._hotkey_obj.release(self._listener.canonical(key))
