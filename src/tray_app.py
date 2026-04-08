@@ -1,4 +1,5 @@
 """System tray icon and settings popup for Heerif."""
+import threading
 import tkinter as tk
 from tkinter import ttk
 from typing import Callable
@@ -6,7 +7,7 @@ from typing import Callable
 import pystray
 from PIL import Image, ImageDraw
 
-from src.config import Config, save_config
+from src.config import Config
 from src.startup import set_startup
 
 
@@ -86,9 +87,13 @@ class TrayApp:
         self._popup_open = False
 
     def _show_settings(self, icon: pystray.Icon, item) -> None:
+        """Open settings popup in a dedicated thread (required for tkinter + pystray)."""
         if self._popup_open:
             return
         self._popup_open = True
+        threading.Thread(target=self._run_popup, daemon=True).start()
+
+    def _run_popup(self) -> None:
         try:
             popup = SettingsPopup(self._config, self._on_settings_saved)
             popup.show()
