@@ -16,7 +16,7 @@ def paste_text(clipboard: ClipboardManager, text: str) -> None:
     ctrl.press('v')
     ctrl.release('v')
     ctrl.release(kb.Key.ctrl)
-    time.sleep(0.05)
+    time.sleep(0.05)  # give the target app time to receive the paste before we restore clipboard
     clipboard.restore()
 
 
@@ -35,7 +35,7 @@ class ConversionPipeline:
         config: Config,
         buffer: KeystrokeBuffer,
         clipboard: ClipboardManager,
-        maps: dict,
+        maps: dict[str, dict[str, str]],
     ) -> None:
         self._config = config
         self._buffer = buffer

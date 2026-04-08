@@ -53,4 +53,5 @@ def test_buffer_mode_disabled_skips_buffer():
     with patch('src.pipeline.paste_text') as mock_paste, \
          patch('src.pipeline.type_replacing') as mock_type:
         pipeline.run()
+    mock_paste.assert_not_called()
     mock_type.assert_not_called()
