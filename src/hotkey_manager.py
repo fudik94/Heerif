@@ -28,14 +28,20 @@ class HotkeyManager:
         return '+'.join(formatted)
 
     def start(self) -> None:
-        """Start listening for the configured hotkey. No-op if already running."""
+        """Start listening for the configured hotkey. No-op if already running.
+
+        Raises ValueError if the hotkey string cannot be parsed.
+        """
         if self._listener is not None:
             return
         formatted = self._format_hotkey(self._hotkey_str)
-        self._hotkey_obj = keyboard.HotKey(
-            keyboard.HotKey.parse(formatted),
-            self._callback,
-        )
+        try:
+            keys = keyboard.HotKey.parse(formatted)
+        except ValueError as exc:
+            raise ValueError(
+                f"Invalid hotkey {self._hotkey_str!r}: {exc}"
+            ) from exc
+        self._hotkey_obj = keyboard.HotKey(keys, self._callback)
         self._listener = keyboard.Listener(
             on_press=self._on_press,
             on_release=self._on_release,

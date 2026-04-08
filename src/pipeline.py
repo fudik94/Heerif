@@ -8,8 +8,10 @@ from src.converter import auto_convert
 
 
 def paste_text(clipboard: ClipboardManager, text: str) -> None:
-    """Set clipboard to text and simulate Ctrl+V, then restore clipboard."""
-    clipboard.save()
+    """Set clipboard to text, simulate Ctrl+V, then restore clipboard.
+
+    Caller is responsible for saving clipboard state before calling this.
+    """
     clipboard.set(text)
     ctrl = kb.Controller()
     ctrl.press(kb.Key.ctrl)
@@ -46,6 +48,9 @@ class ConversionPipeline:
         """Detect text source, convert layout, and paste result back."""
         text: str | None = None
         source: str | None = None
+
+        # Save clipboard before get_selection() which overwrites it via Ctrl+C.
+        self._clipboard.save()
 
         if self._config.selection_mode:
             selected = self._clipboard.get_selection()

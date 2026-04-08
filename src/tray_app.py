@@ -61,12 +61,13 @@ class SettingsPopup:
         )
 
         def _save() -> None:
+            new_startup = start_var.get()
+            set_startup(new_startup)  # call before mutating config so failure leaves state clean
             self._config.hotkey = hotkey_var.get().strip()
             self._config.language_pair = pair_var.get()
             self._config.selection_mode = sel_var.get()
             self._config.buffer_mode = buf_var.get()
-            self._config.launch_at_startup = start_var.get()
-            set_startup(self._config.launch_at_startup)
+            self._config.launch_at_startup = new_startup
             self._on_save(self._config)
             root.destroy()
 
