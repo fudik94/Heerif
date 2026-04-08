@@ -2,6 +2,8 @@
 
 > Typed in the wrong keyboard layout? Fix it instantly.
 
+Heerif was born out of a daily frustration — switching between EN and RU layouts constantly and realizing only after typing a whole sentence that the layout was wrong. Instead of accepting it as a fact of life, this app fixes it with a single keystroke.
+
 **Heerif** sits in the system tray and watches your keyboard. Press `Ctrl+Space` — and your mistyped text converts between English and Russian layouts on the spot.
 
 ```
@@ -93,3 +95,9 @@ main.py               # Entry point
 ## License
 
 MIT
+
+---
+
+## Author
+
+Made by **Fuad Ismayilbayli**
