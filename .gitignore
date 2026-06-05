@@ -9,3 +9,10 @@ build/
 .heerif/
 .superpowers/
 .worktrees/
+
+# Claude AI — local only, never push
+CLAUDE.md
+docs/
+.claude/
+debug_hotkey.py
+debug_keyboard.py
