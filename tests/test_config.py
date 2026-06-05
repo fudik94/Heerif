@@ -3,7 +3,7 @@ from src.config import Config, load_config, save_config
 
 def test_default_config():
     cfg = Config()
-    assert cfg.hotkey == 'ctrl+space'
+    assert cfg.hotkey == 'ctrl+f12'
     assert cfg.language_pair == 'en_ru'
     assert cfg.selection_mode is True
     assert cfg.buffer_mode is True
@@ -23,7 +23,7 @@ def test_load_missing_file_returns_defaults(tmp_path):
     missing = tmp_path / 'nonexistent' / 'config.json'
     with patch('src.config.CONFIG_PATH', missing):
         cfg = load_config()
-    assert cfg.hotkey == 'ctrl+space'
+    assert cfg.hotkey == 'ctrl+f12'
 
 def test_save_creates_parent_dirs(tmp_path):
     config_file = tmp_path / 'nested' / 'dir' / 'config.json'

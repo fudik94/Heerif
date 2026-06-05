@@ -1,6 +1,7 @@
+import ctypes
+import threading
 from src.config import load_config, save_config
 from src.layout_maps import get_maps
-from src.keyboard_hook import KeystrokeBuffer, KeyboardHook
 from src.clipboard_manager import ClipboardManager
 from src.hotkey_manager import HotkeyManager
 from src.pipeline import ConversionPipeline
@@ -10,19 +11,15 @@ from src.tray_app import TrayApp
 def main() -> None:
     config = load_config()
     maps = get_maps(config.language_pair)
-
-    buffer = KeystrokeBuffer(max_size=int(config.buffer_size))
     clipboard = ClipboardManager()
+    pipeline = ConversionPipeline(config=config, clipboard=clipboard, maps=maps)
 
-    pipeline = ConversionPipeline(
-        config=config,
-        buffer=buffer,
-        clipboard=clipboard,
-        maps=maps,
-    )
+    def on_hotkey() -> None:
+        hwnd = ctypes.windll.user32.GetForegroundWindow()
+        clipboard.set_target_window(hwnd)
+        threading.Thread(target=pipeline.run, daemon=True).start()
 
-    hotkey_mgr = HotkeyManager(config.hotkey, pipeline.run)
-    kb_hook = KeyboardHook(buffer)
+    hotkey_mgr = HotkeyManager(config.hotkey, on_hotkey)
 
     def on_settings_saved(updated_config) -> None:
         nonlocal maps
@@ -32,13 +29,9 @@ def main() -> None:
         hotkey_mgr.update_hotkey(updated_config.hotkey)
         save_config(updated_config)
 
-    kb_hook.start()
     hotkey_mgr.start()
-
     tray = TrayApp(config, on_settings_saved)
-    tray.run()  # blocks until user clicks Quit
-
-    kb_hook.stop()
+    tray.run()
     hotkey_mgr.stop()
 
 

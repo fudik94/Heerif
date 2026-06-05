@@ -8,7 +8,7 @@ CONFIG_PATH = Path.home() / '.heerif' / 'config.json'
 
 @dataclass
 class Config:
-    hotkey: str = 'ctrl+space'
+    hotkey: str = 'ctrl+f12'
     language_pair: str = 'en_ru'
     selection_mode: bool = True
     buffer_mode: bool = True
