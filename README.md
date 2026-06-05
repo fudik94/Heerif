@@ -2,7 +2,7 @@
 
 > Typed in the wrong keyboard layout? Fix it instantly.
 
-[![Download](https://img.shields.io/badge/Download-Heerif.exe-blue?style=for-the-badge)](https://huggingface.co/datasets/fudik94/heerif-releases/resolve/main/Heerif.exe)
+[![Download](https://img.shields.io/badge/Download-Heerif.exe-blue?style=for-the-badge)](https://github.com/fudik94/Heerif/releases/download/v0.2.0/Heerif.exe)
 
 Heerif was born out of a daily frustration - switching between EN and RU layouts constantly and realizing only after typing a whole sentence that the layout was wrong. Instead of accepting it as a fact of life, this app fixes it with a single keystroke.
 
